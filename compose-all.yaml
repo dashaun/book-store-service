@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+
+  book_store_db:
+    image: postgres:14
+    container_name: book_store_db
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: book_store_db
+    ports:
+      - "5432:5432"
+    networks:
+      retail_app_network:
+        ipv4_address: 172.20.0.5
+    volumes:
+      - ~/docker-data/postgres-data/book_store_db:/var/lib/postgresql/data/
+      - ./init-book-store-db.sql:/docker-entrypoint-initdb.d/init-book-store-db.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      start_period: 10s
+      interval: 5s
+      timeout: 4s
+      retries: 3
+
+#  book_store_app:
+#    image: docker.io/library/book-store:0.0.1-SNAPSHOT
+#    container_name: book_store_app
+#    restart: always
+#    ports:
+#      - "8083:8083"
+#    networks:
+#      retail_app_network:
+#        ipv4_address: 172.20.0.4
+#    depends_on:
+#      book_store_db:
+#        condition: service_healthy
+#    env_file:
+#      - env_file.env
+#
+#  dev_prometheus:
+#    image: bitnami/prometheus:2.42.0
+#    container_name: dev_prometheus
+#    restart: always
+#    ports:
+#      - "9090:9090"
+#    networks:
+#      retail_app_network:
+#        ipv4_address: 172.20.0.10
+#    volumes:
+#      - ~/docker-data/prometheus-data:/opt/bitnami/prometheus/data
+#      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+#    depends_on:
+#      dev_shipping_app:
+#        condition: service_started
+#
+#  dev_grafana:
+#    image: grafana/grafana:9.4.3
+#    container_name: dev_grafana
+#    restart: always
+#    environment:
+#      - GF_SECURITY_ADMIN_USER=admin
+#      - GF_SECURITY_ADMIN_PASSWORD=admin
+#      - GF_USERS_ALLOW_SIGN_UP=false
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      retail_app_network:
+#        ipv4_address: 172.20.0.11
+#    volumes:
+#      - ~/docker-data/grafana-data:/var/lib/grafana
+##      - ./grafana/provisioning:/etc/grafana/provisioning
+#    depends_on:
+#      dev_prometheus:
+#        condition: service_started
+
+networks:
+  retail_app_network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
