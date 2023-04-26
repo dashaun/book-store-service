@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.vinc</groupId>
-    <artifactId>book-store</artifactId>
+    <artifactId>book-store-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>book-store</name>
-    <description>book-store</description>
+    <name>book-store-service</name>
+    <description>book-store-service</description>
     <properties>
         <java.version>17</java.version>
         <testcontainers.version>1.17.6</testcontainers.version>
@@ -163,9 +163,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <jvmArguments>
-                        -agentlib:native-image-agent=config-output-dir=target/native-image
-                    </jvmArguments>
                     <image>
                         <builder>dashaun/builder:20230204</builder>
                     </image>
